@@ -1,0 +1,12 @@
+:root {
+    --primary-color: #2563EB;
+    --secondary-color: #F97316;
+    --bg-color: #F8FAFC;
+    --text-dark: #1E293B;
+    --success-color: #22C55E;
+    --danger-color: #EF4444;
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+    --border-radius: 12px;
+    --soft-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}

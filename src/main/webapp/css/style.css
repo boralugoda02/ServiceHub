@@ -1,0 +1,292 @@
+/* 1. Import Variables */
+@import url('variables.css');
+
+/* 2. Global Styles */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--text-dark);
+}
+
+/* 3. Button Standards */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 30px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition: 0.3s;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color) !important;
+    color: var(--primary-color) !important;
+    padding: 10px 30px;
+    border-radius: var(--border-radius);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* 4. Card Styling */
+.card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--soft-shadow);
+    border: none;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+}
+
+/* 5. Navbar Styling */
+.navbar {
+    padding: 15px 0;
+    background: white !important;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin: 0 10px;
+    transition: 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* 6. Sections Styling */
+.hero-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-title {
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: var(--text-dark);
+}
+
+/* 7. Contact Section Fix */
+#contact {
+    background-color: #1E293B !important; /* Dark theme */
+    padding: 80px 0 !important;
+}
+
+#contact h2, #contact p {
+    color: #ffffff !important; /* අකුරු සුදු පැහැ ගැන්වීම */
+}
+
+/* 8. Footer Styling */
+footer {
+    background-color: #0f172a;
+    color: #cbd5e1;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+/* 9. Utility Classes */
+.bg-light { background-color: #f8fafc !important; }
+.bg-primary { background-color: var(--primary-color) !important; color: white !important; }
+
+/* Container styling */
+.container {
+    width: 80%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+
+/* Timeline Container */
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+/* Individual Steps */
+.step {
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    flex-grow: 1;
+    text-align: center;
+    color: #666;
+    font-weight: bold;
+    position: relative;
+    transition: 0.3s;
+}
+
+/* Active Step (Current status) */
+.step.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+/* Completed Steps */
+.step.completed {
+    background-color: #28a745;
+    color: white;
+    border-color: #1e7e34;
+}
+
+/* Buttons Styling */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+}
+.btn-primary { background-color: #007bff; }
+.btn-danger  { background-color: #dc3545; }
+.btn-warning { background-color: #ffc107; color: #000; }
+.btn-success { background-color: #28a745; }
+
+/* ==========================================================================
+   10. Premium Login Page Styling (Glassmorphism & Dark Gradient)
+   ========================================================================== */
+
+.login-body {
+    background: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #0f172a 100%) !important;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif !important;
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(30, 41, 59, 0.7) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    padding: 40px !important;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+    transition: transform 0.4s ease, box-shadow 0.4s ease !important;
+    color: #f1f5f9;
+}
+
+.login-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+.login-card h3 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px;
+    margin-bottom: 25px !important;
+}
+
+.login-card .form-label {
+    color: #cbd5e1 !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.login-card .form-control {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px !important;
+    color: #ffffff !important;
+    padding: 12px 16px !important;
+    font-size: 0.95rem;
+    transition: all 0.3s ease !important;
+}
+
+.login-card .form-control:focus {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25) !important;
+    outline: none;
+}
+
+.login-card .form-control::placeholder {
+    color: #64748b !important;
+}
+
+.login-card .form-check-label {
+    color: #cbd5e1 !important;
+    font-size: 0.875rem;
+}
+
+.login-card .form-check-input {
+    background-color: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.login-card .form-check-input:checked {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.login-card a {
+    color: #60a5fa !important;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
+
+.login-card a:hover {
+    color: #93c5fd !important;
+    text-decoration: underline !important;
+}
+
+.login-card .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    font-weight: 600 !important;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.login-card .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+.login-card .btn-primary:active {
+    transform: translateY(0) !important;
+}
+
+.login-card .text-center p {
+    color: #94a3b8 !important;
+    font-size: 0.9rem;
+}
