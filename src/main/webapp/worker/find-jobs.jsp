@@ -3,9 +3,11 @@
 <%@page import="com.mycompany.servicehub.model.ServiceRequest"%>
 <%@page import="java.util.List"%>
 <%@include file="../header.jsp" %>
+<jsp:include page="../common/sidebar.jsp" />
 
-<div class="container mt-5">
-    <h2 class="mb-4">Available Jobs</h2>
+<div class="main-content">
+    <div class="container-fluid">
+        <h2 class="mb-4">Available Jobs</h2>
 
     <form action="find-jobs.jsp" method="GET" class="row g-3 mb-4 p-3 bg-light border rounded">
         <div class="col-md-4">
@@ -54,6 +56,7 @@
                 } 
             }
         %>
+    </div>
     </div>
 </div>
 <%@include file="../footer.jsp" %>

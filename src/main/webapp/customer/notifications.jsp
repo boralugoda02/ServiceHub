@@ -1,56 +1,34 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    Integer customerId = (Integer) session.getAttribute("customerId");
+    String userName = (String) session.getAttribute("userName");
+    if (userName == null) userName = "Customer";
+    if (customerId == null) { response.sendRedirect("../login.jsp"); return; }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%@include file="header.jsp" %>
-    <title>Notifications</title>
+    <meta charset="UTF-8">
+    <title>Notifications - ServiceHub</title>
+    <%@include file="../header.jsp" %>
+    <style>
+        .noti-card { background: white; border: none; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); padding: 20px; margin-bottom: 15px; border-left: 5px solid #007bff; }
+    </style>
 </head>
-<body class="bg-light">
+<body>
+    <jsp:include page="../common/sidebar.jsp" />
 
-    <div class="container py-5">
-        <div class="card notif-card p-4">
-            <h4 class="fw-bold mb-4"><i class="fas fa-bell text-primary"></i> Notifications</h4>
-            
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex align-items-center">
-                    <div class="icon-box bg-primary text-white"><i class="fas fa-briefcase"></i></div>
-                    <div>
-                        <h6 class="mb-1">New Job Request</h6>
-                        <small class="text-muted">You have a new painting request from Nimal.</small>
-                    </div>
-                </li>
-
-                <li class="list-group-item d-flex align-items-center">
-                    <div class="icon-box bg-success text-white"><i class="fas fa-check-circle"></i></div>
-                    <div>
-                        <h6 class="mb-1">Booking Accepted</h6>
-                        <small class="text-muted">Your booking for Plumbing Service has been accepted by John.</small>
-                    </div>
-                </li>
-
-                <li class="list-group-item d-flex align-items-center">
-                    <div class="icon-box bg-danger text-white"><i class="fas fa-times-circle"></i></div>
-                    <div>
-                        <h6 class="mb-1">Booking Cancelled</h6>
-                        <small class="text-muted">Sorry, the Electrician cancelled your request due to an emergency.</small>
-                    </div>
-                </li>
-
-                <li class="list-group-item d-flex align-items-center">
-                    <div class="icon-box bg-warning text-white"><i class="fas fa-star"></i></div>
-                    <div>
-                        <h6 class="mb-1">Review Reminder</h6>
-                        <small class="text-muted">How was your recent Car Wash service? Please rate it.</small>
-                    </div>
-                </li>
-            </ul>
+    <div class="main-content">
+        <div class="container-fluid">
+            <h2 class="fw-bold text-dark mb-4">Notifications</h2>
+            <div class="noti-card">
+                <div class="d-flex justify-content-between">
+                    <h6 class="fw-bold text-dark mb-1">Welcome to ServiceHub!</h6>
+                    <small class="text-muted">Just now</small>
+                </div>
+                <p class="text-muted mb-0">Your customer dashboard account is fully activated. You can now request services easily.</p>
+            </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init(); // Initialize AOS animations
-</script>
 </body>
 </html>

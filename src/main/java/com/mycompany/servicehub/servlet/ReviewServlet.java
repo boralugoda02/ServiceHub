@@ -26,9 +26,9 @@ public class ReviewServlet extends HttpServlet {
             r.setRating(Integer.parseInt(request.getParameter("rating")));
 
             if (reviewDAO.addReview(r)) {
-                response.sendRedirect("success.jsp");
+                response.sendRedirect("customer/my-bookings.jsp?status=reviewed");
             } else {
-                response.sendRedirect("error.jsp");
+                response.sendRedirect("reviews.jsp?error=DatabaseError");
             }
         } else if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));

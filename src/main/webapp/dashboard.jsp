@@ -7,6 +7,18 @@
         response.sendRedirect(request.getContextPath() + "/login.jsp?error=LoginRequired");
         return;
     }
+
+    // Redirect to role-specific dashboard
+    if ("Admin".equalsIgnoreCase(user.getRole())) {
+        response.sendRedirect(request.getContextPath() + "/DashboardServlet");
+        return;
+    } else if ("Customer".equalsIgnoreCase(user.getRole())) {
+        response.sendRedirect(request.getContextPath() + "/customer/dashboard.jsp");
+        return;
+    } else if ("Worker".equalsIgnoreCase(user.getRole())) {
+        response.sendRedirect(request.getContextPath() + "/worker/dashboard.jsp");
+        return;
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,45 +41,7 @@
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="px-4 py-3 text-center border-bottom border-secondary mb-3">
-            <img src="https://ui-avatars.com/api/?name=<%= user.getFullName() %>&background=3b82f6&color=fff" class="profile-header-img mb-2" alt="Profile">
-            <h6 class="mb-0 text-truncate"><%= user.getFullName() %></h6>
-            <small class="text-muted"><%= user.getEmail() %></small>
-            <div class="mt-2">
-                <span class="status-badge"><i class="fas fa-circle text-success me-1"></i><%= user.getAvailabilityStatus() %></span>
-            </div>
-        </div>
-        <nav class="nav flex-column">
-            <a class="nav-link active" href="dashboard.jsp"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-
-            <%-- Customer specific menus --%>
-            <% if("Customer".equals(user.getRole())) { %>
-                <a class="nav-link" href="customer/request-service.jsp"><i class="fas fa-plus-circle"></i> Request Service</a>
-                <a class="nav-link" href="customer/my-bookings.jsp"><i class="fas fa-calendar-check"></i> My Bookings</a>
-            <% } %>
-
-            <%-- Worker specific menus --%>
-            <% if("Worker".equals(user.getRole())) { %>
-                <a class="nav-link" href="worker/find-jobs.jsp"><i class="fas fa-search"></i> Find Jobs</a>
-                <a class="nav-link" href="worker/my-jobs.jsp"><i class="fas fa-briefcase"></i> My Gigs</a>
-                <a class="nav-link" href="worker/earnings.jsp"><i class="fas fa-wallet"></i> My Wallet</a>
-            <% } %>
-
-            <%-- Admin specific menus --%>
-            <% if("Admin".equals(user.getRole())) { %>
-                <a class="nav-link" href="admin/manage-users.jsp"><i class="fas fa-users-cog"></i> Manage Users</a>
-                <a class="nav-link" href="admin/manage-services.jsp"><i class="fas fa-tools"></i> Manage Services</a>
-                <a class="nav-link" href="admin/reports.jsp"><i class="fas fa-chart-bar"></i> Reports</a>
-            <% } %>
-
-            <%-- Common menus --%>
-            <a class="nav-link" href="customer/notifications.jsp"><i class="fas fa-bell"></i> Notifications</a>
-            <a class="nav-link" href="customer/profile.jsp"><i class="fas fa-user"></i> My Profile</a>
-            <hr class="mx-3 my-2 text-secondary">
-            <a class="nav-link text-danger" href="LogoutServlet"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </nav>
-    </div>
+    <jsp:include page="common/sidebar.jsp" />
 
     <div class="main-content">
         <h2 class="fw-bold text-dark">Welcome back, <%= user.getFullName() %>!</h2>

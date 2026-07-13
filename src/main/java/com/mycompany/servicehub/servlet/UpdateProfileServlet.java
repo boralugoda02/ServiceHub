@@ -1,40 +1,50 @@
 package com.mycompany.servicehub.servlet;
 
-import com.mycompany.servicehub.dao.ServiceRequestDAO;
+import com.mycompany.servicehub.dao.UserDAO;
+import com.mycompany.servicehub.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/UpdateJobStatusServlet")
+@WebServlet("/update-profile")
 public class UpdateProfileServlet extends HttpServlet {
+    private UserDAO userDAO = new UserDAO();
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Read parameters from the request URL
-        String idParam = request.getParameter("id");
-        String newStatus = request.getParameter("status"); // e.g., "Completed", "In Progress"
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        if (idParam == null || newStatus == null) {
-            response.sendRedirect("worker/my-jobs.jsp?error=InvalidRequest");
+        if (user == null) {
+            response.sendRedirect("login.jsp?error=SessionExpired");
             return;
         }
 
-        int requestId = Integer.parseInt(idParam);
-        
-        // Update the status in the database using DAO
-        ServiceRequestDAO dao = new ServiceRequestDAO();
-        boolean isUpdated = dao.updateStatus(requestId, newStatus);
+        String fullName = request.getParameter("fullName");
+        String phoneNumber = request.getParameter("phoneNumber");
+        String address = request.getParameter("address");
+        String skills = request.getParameter("skills");
+
+        boolean isUpdated = userDAO.updateProfile(user.getUserId(), fullName, phoneNumber, address, skills);
 
         if (isUpdated) {
-            // Success: Redirect back to the worker's job list
-            response.sendRedirect("worker/my-jobs.jsp?success=StatusUpdated");
+            // Update the User object in session
+            user.setFullName(fullName);
+            user.setPhone(phoneNumber);
+            user.setAddress(address);
+            user.setSkills(skills);
+            session.setAttribute("user", user);
+            session.setAttribute("userName", fullName);
+
+            response.sendRedirect("profile.jsp?status=success");
         } else {
-            // Error: Redirect with failure message
-            response.sendRedirect("worker/my-jobs.jsp?error=UpdateFailed");
+            response.sendRedirect("profile.jsp?error=UpdateFailed");
         }
     }
 }

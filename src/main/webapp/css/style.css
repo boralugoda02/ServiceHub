@@ -290,3 +290,77 @@ footer {
     color: #94a3b8 !important;
     font-size: 0.9rem;
 }
+
+/* ==========================================================================
+   11. Universal Sidebar and Main Content Layout
+   ========================================================================== */
+.sidebar {
+    min-height: 100vh;
+    background-color: #1e293b !important;
+    color: white;
+    width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+    z-index: 100;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .profile-header-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #3b82f6;
+    object-fit: cover;
+}
+
+.sidebar .status-badge {
+    background-color: #dcfce7;
+    color: #15803d;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.sidebar .nav-link {
+    color: #cbd5e1 !important;
+    padding: 12px 20px;
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 4px 10px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background: #334155 !important;
+    color: white !important;
+}
+
+.sidebar .nav-link i {
+    width: 24px;
+    font-size: 1.1rem;
+    margin-right: 8px;
+}
+
+.main-content {
+    margin-left: 260px;
+    padding: 40px;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+}

@@ -1,21 +1,29 @@
 package com.mycompany.servicehub.dao;
 
 import com.mycompany.servicehub.model.Booking;
+import com.mycompany.servicehub.config.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookingDAO {
+    
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/servicehub", "root", "password");
+        return DBConnection.getConnection();
     }
 
     public boolean createBooking(Booking b) {
-        String sql = "INSERT INTO bookings (customer_name, service_name, status) VALUES (?,?,?)";
+        String sql = "INSERT INTO bookings (request_id, customer_id, worker_id, service_date, service_time, booking_status, payment_status, total_amount, notes) VALUES (?,?,?,?,?,?,?,?,?)";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, b.getCustomerName());
-            ps.setString(2, b.getServiceName());
-            ps.setString(3, "Pending");
+            if (b.getRequestId() != null) ps.setInt(1, b.getRequestId()); else ps.setNull(1, Types.INTEGER);
+            if (b.getCustomerId() != null) ps.setInt(2, b.getCustomerId()); else ps.setNull(2, Types.INTEGER);
+            if (b.getWorkerId() != null) ps.setInt(3, b.getWorkerId()); else ps.setNull(3, Types.INTEGER);
+            ps.setString(4, b.getServiceDate());
+            ps.setString(5, b.getServiceTime());
+            ps.setString(6, b.getBookingStatus() != null ? b.getBookingStatus() : "Confirmed");
+            ps.setString(7, b.getPaymentStatus() != null ? b.getPaymentStatus() : "Pending");
+            ps.setDouble(8, b.getTotalAmount());
+            ps.setString(9, b.getNotes());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
@@ -26,40 +34,36 @@ public class BookingDAO {
         try (Connection conn = getConnection(); Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
-                Booking b = new Booking();
-                b.setId(rs.getInt("id"));
-                b.setCustomerName(rs.getString("customer_name"));
-                b.setServiceName(rs.getString("service_name"));
-                b.setStatus(rs.getString("status"));
-                list.add(b);
+                list.add(mapRow(rs));
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
 
-    public void updateBookingStatus(int id, String status) {
-        String sql = "UPDATE bookings SET status = ? WHERE id = ?";
+    public void updateBookingStatus(int bookingId, String status) {
+        String sql = "UPDATE bookings SET booking_status = ? WHERE booking_id = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
-            ps.setInt(2, id);
+            ps.setInt(2, bookingId);
             ps.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    public void deleteBooking(int id) {
-        String sql = "DELETE FROM bookings WHERE id = ?";
+    public void deleteBooking(int bookingId) {
+        String sql = "DELETE FROM bookings WHERE booking_id = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setInt(1, bookingId);
             ps.executeUpdate();
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
     public int getBookingCountByStatus(String status) {
-        String sql = "SELECT COUNT(*) FROM bookings WHERE status = ?";
+        String sql = "SELECT COUNT(*) FROM bookings WHERE booking_status = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
         } catch (SQLException e) { e.printStackTrace(); }
         return 0;
     }
@@ -69,24 +73,67 @@ public class BookingDAO {
         String sql = "SELECT * FROM bookings WHERE customer_id = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, customerId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Booking b = new Booking();
-                b.setCustomerName(rs.getString("customer_name"));
-                b.setStatus(rs.getString("status"));
-                list.add(b);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
 
     public int getWorkerCompletedJobs(int workerId) {
-        String sql = "SELECT COUNT(*) FROM bookings WHERE worker_id = ? AND status = 'Completed'";
+        String sql = "SELECT COUNT(*) FROM bookings WHERE worker_id = ? AND booking_status = 'Completed'";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, workerId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
         } catch (SQLException e) { e.printStackTrace(); }
         return 0;
+    }
+
+    public Booking getBookingById(int bookingId) {
+        String sql = "SELECT * FROM bookings WHERE booking_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, bookingId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
+
+    // අතුරුදහන් වී තිබූ mapRow ක්‍රමවේදය (Helper Method)
+    private Booking mapRow(ResultSet rs) throws SQLException {
+        Booking b = new Booking();
+        b.setBookingId(rs.getInt("booking_id"));
+        b.setRequestId(rs.getInt("request_id"));
+        b.setCustomerId(rs.getInt("customer_id"));
+        b.setWorkerId(rs.getInt("worker_id"));
+        b.setBookingDate(rs.getString("booking_date"));
+        b.setServiceDate(rs.getString("service_date"));
+        b.setServiceTime(rs.getString("service_time"));
+        b.setBookingStatus(rs.getString("booking_status"));
+        b.setPaymentStatus(rs.getString("payment_status"));
+        b.setTotalAmount(rs.getDouble("total_amount"));
+        b.setNotes(rs.getString("notes"));
+        return b;
+    }
+
+    public List<Booking> getJobsByWorker(int workerId) {
+        List<Booking> list = new ArrayList<>();
+        String sql = "SELECT * FROM bookings WHERE worker_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, workerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
     }
 }

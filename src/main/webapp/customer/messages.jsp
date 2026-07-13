@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%@include file="header.jsp" %>
+    <%@include file="../header.jsp" %>
      <title>Messages</title>
 </head>
 <body class="bg-light">

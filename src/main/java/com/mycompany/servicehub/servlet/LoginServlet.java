@@ -35,6 +35,11 @@ public class LoginServlet extends HttpServlet {
             // 4. Session එක ආරම්භ කිරීම - "user" attribute එකෙන්ම සම්පූර්ණ object එක save කිරීම
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
+            session.setAttribute("customerId", user.getUserId());
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userName", user.getFullName() != null ? user.getFullName() : user.getUsername());
+            session.setAttribute("userEmail", user.getEmail());
+            session.setAttribute("userStatus", user.getAvailabilityStatus());
 
             response.sendRedirect("dashboard.jsp");
         } else {

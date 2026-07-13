@@ -51,4 +51,33 @@ public class CategoryDAO {
             e.printStackTrace(); 
         }
     }
+
+    // 4. Get first category ID or create a default one
+    public int getOrCreateDefaultCategoryId() {
+        String query = "SELECT category_id FROM service_categories LIMIT 1";
+        try (Connection conn = getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                return rs.getInt("category_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        // If no category exists, create a default one
+        String insert = "INSERT INTO service_categories (category_name) VALUES ('General')";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)) {
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1; // Fallback
+    }
 }

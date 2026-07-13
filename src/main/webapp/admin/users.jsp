@@ -1,11 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="com.mycompany.servicehub.dao.UserDAO"%>
+<%
+    UserDAO userDAO = new UserDAO();
+    request.setAttribute("userList", userDAO.getAllUsers());
+%>
 <html>
 <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>User Management - Admin</title>
+    <%@include file="../header.jsp" %>
 </head>
 <body class="bg-light">
-<div class="container mt-4">
+    <%@include file="admin-layout.jsp" %>
     <h2>User Management</h2>
     <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search users...">
     
@@ -21,14 +27,14 @@
                     <td>${u.role}</td>
                     <td>${u.status}</td>
                     <td>
-                        <a href="UserManagementServlet?action=toggleStatus&id=${u.userId}&status=${u.status == 'Active' ? 'Deactivated' : 'Active'}" 
+                        <a href="${pageContext.request.contextPath}/UserManagementServlet?action=toggleStatus&id=${u.userId}&status=${u.status == 'Active' ? 'Deactivated' : 'Active'}" 
                            class="btn btn-sm btn-warning">Toggle Status</a>
-                        <a href="UserManagementServlet?action=delete&id=${u.userId}" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="${pageContext.request.contextPath}/UserManagementServlet?action=delete&id=${u.userId}" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
             </c:forEach>
         </tbody>
     </table>
-</div>
+    </div></div>
 </body>
 </html>

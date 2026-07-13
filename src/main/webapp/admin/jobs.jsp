@@ -2,7 +2,7 @@
 <html>
     <head>
     
-    <%@include file="header.jsp" %>
+    <%@include file="../header.jsp" %>
     <title>Manage Jobs</title>
 </head>
     

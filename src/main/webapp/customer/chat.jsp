@@ -23,7 +23,7 @@
     </c:forEach>
 </div>
 
-<form action="ChatServlet" method="POST">
+<form action="${pageContext.request.contextPath}/ChatServlet" method="POST">
     <input type="hidden" name="action" value="SEND">
     <input type="hidden" name="bookingId" value="${bookingId}">
     <input type="hidden" name="receiverId" value="${receiverId}">

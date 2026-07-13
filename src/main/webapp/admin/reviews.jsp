@@ -9,10 +9,10 @@
 <html>
 <head>
     <title>Manage Reviews - Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <%@include file="../header.jsp" %>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
+    <%@include file="admin-layout.jsp" %>
     <h3 class="mb-4">Review Management</h3>
     
     <input type="text" id="searchInput" class="form-control mb-3" onkeyup="filterReviews()" placeholder="Search by customer name...">
@@ -36,7 +36,7 @@
             </c:forEach>
         </tbody>
     </table>
-</div>
+    </div></div>
 
 <script>
 function filterReviews() {

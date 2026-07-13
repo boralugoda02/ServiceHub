@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ReviewDAO {
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/servicehub", "root", "password");
+        return com.mycompany.servicehub.config.DBConnection.getConnection();
     }
 
     // Add a new review and return true if successful

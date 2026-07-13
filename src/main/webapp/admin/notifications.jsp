@@ -8,40 +8,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Notification Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Notification Management - Admin</title>
+    <%@include file="../header.jsp" %>
 </head>
-<body class="bg-light">
-<div class="container mt-5">
-    <h3 class="mb-4">System Notifications</h3>
-    
-    <div class="card p-4 shadow-sm mb-4">
-        <h5>Send Broadcast Announcement</h5>
-        <form action="../NotificationServlet" method="POST" class="mt-3">
-            <input type="hidden" name="action" value="broadcast">
-            <textarea name="message" class="form-control mb-3" placeholder="Type your announcement here..." required></textarea>
-            <button type="submit" class="btn btn-primary">Broadcast to All</button>
-        </form>
-    </div>
+<body>
+    <jsp:include page="../common/sidebar.jsp" />
 
-    <table class="table table-bordered bg-white shadow-sm">
-        <thead class="table-dark">
-            <tr><th>ID</th><th>Message</th><th>Recipient</th><th>Action</th></tr>
-        </thead>
-        <tbody>
-            <c:forEach var="n" items="${notificationList}">
-                <tr>
-                    <td>${n.id}</td>
-                    <td>${n.message}</td>
-                    <td>${n.recipient}</td>
-                    <td>
-                        <a href="../NotificationServlet?action=delete&id=${n.id}" 
-                           class="btn btn-danger btn-sm" onclick="return confirm('Delete this notification?')">Delete</a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-</div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <h3 class="fw-bold text-dark mb-4">System Notifications</h3>
+            
+            <div class="card p-4 shadow-sm mb-4 border-0 bg-white">
+                <h5 class="fw-bold text-dark">Send Broadcast Announcement</h5>
+                <form action="${pageContext.request.contextPath}/NotificationServlet" method="POST" class="mt-3">
+                    <input type="hidden" name="action" value="broadcast">
+                    <textarea name="message" class="form-control mb-3" placeholder="Type your announcement here..." required></textarea>
+                    <button type="submit" class="btn btn-primary fw-semibold">Broadcast to All</button>
+                </form>
+            </div>
+
+            <div class="card p-3 shadow-sm border-0 bg-white">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Message</th>
+                                <th>Recipient ID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="n" items="${notificationList}">
+                                <tr>
+                                    <td>#${n.id}</td>
+                                    <td>${n.message}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${n.recipient == 0}">
+                                                <span class="badge bg-secondary">All (Broadcast)</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                User #${n.recipient}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/NotificationServlet?action=delete&id=${n.id}" 
+                                           class="btn btn-danger btn-sm fw-semibold" onclick="return confirm('Delete this notification?')">
+                                           <i class="fas fa-trash-alt me-1"></i>Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -122,4 +122,30 @@ public class ServiceRequestDAO {
         }
         return list;
     }
+
+    public int saveRequestAndGetId(ServiceRequest sr) {
+        String sql = "INSERT INTO service_requests (customer_id, category_id, title, description, location, status) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            ps.setInt(1, sr.getCustomerId());
+            ps.setInt(2, sr.getCategoryId());
+            ps.setString(3, sr.getTitle());
+            ps.setString(4, sr.getDescription());
+            ps.setString(5, sr.getLocation());
+            ps.setString(6, sr.getStatus() != null ? sr.getStatus() : "Pending");
+            
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }

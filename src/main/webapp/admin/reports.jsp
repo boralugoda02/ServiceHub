@@ -9,10 +9,10 @@
 <html>
 <head>
     <title>System Reports - Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <%@include file="../header.jsp" %>
 </head>
 <body class="bg-light">
-<div class="container mt-5">
+    <%@include file="admin-layout.jsp" %>
     <h3 class="mb-4">System Statistics Report</h3>
     
     <div class="row text-center">
@@ -22,12 +22,12 @@
         <div class="col-md-3"><div class="card p-3 shadow-sm bg-info text-white"><h5>Reviews</h5><h3>${stats.reviews}</h3></div></div>
     </div>
 
-    <div class="mt-5 p-4 bg-white shadow-sm">
+    <div class="mt-5 p-4 bg-white shadow-sm rounded">
         <h5>Export Data</h5>
         <hr>
         <button class="btn btn-danger" onclick="window.print()">Export as PDF</button>
         <button class="btn btn-success" onclick="alert('Excel export functionality to be integrated with Apache POI')">Export as Excel</button>
     </div>
-</div>
+    </div></div>
 </body>
 </html>

@@ -130,6 +130,22 @@ public class UserDAO {
         return null;
     }
 
+    // Get a user by their ID
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // Find worker IDs located in a given city
     public List<Integer> getNearbyWorkers(String city) {
         List<Integer> workerIds = new ArrayList<>();
@@ -249,6 +265,22 @@ public class UserDAO {
             e.printStackTrace();
         }
         return users;
+    }
+
+    // Update user profile information
+    public boolean updateProfile(int userId, String fullName, String phone, String address, String skills) {
+        String sql = "UPDATE users SET full_name = ?, phone = ?, address = ?, skills = ? WHERE user_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, fullName);
+            ps.setString(2, phone);
+            ps.setString(3, address);
+            ps.setString(4, skills);
+            ps.setInt(5, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // Helper method to map a ResultSet row to a User object
