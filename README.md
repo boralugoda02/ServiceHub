@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ServiceHub - Java Web Application
 
 ServiceHub is a Java-based web application built using Jakarta Servlets, JSP, MySQL, and Maven.
@@ -19,3 +20,7 @@ ServiceHub is a Java-based web application built using Jakarta Servlets, JSP, My
 ### 2. How to Build and Run
 ```bash
 mvn clean install
+=======
+# ServiceHub
+Java Web Application (Jakarta Servlets + JSP + MySQL)
+>>>>>>> db94169513c38ead6629f77e9ba2e9ee31fe4bcc
