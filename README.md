@@ -1,26 +1,50 @@
-<<<<<<< HEAD
-# ServiceHub - Java Web Application
+ ServiceHub - Local Service Provider Platform
 
-ServiceHub is a Java-based web application built using Jakarta Servlets, JSP, MySQL, and Maven.
+[![Java Version](https://img.shields.io/badge/Java-11%2B-blue.svg)](https://www.oracle.com/java/)
+[![Jakarta EE](https://img.shields.io/badge/Jakarta%20EE-9-orange.svg)](https://jakarta.ee/)
+[![Build](https://img.shields.io/badge/Build-Maven-red.svg)](https://maven.apache.org/)
+[![Database](https://img.shields.io/badge/Database-MySQL%208.x-cyan.svg)](https://www.mysql.com/)
 
-## Tech Stack
-* **Backend:** Java 11+ / Jakarta EE (Servlets & JSP)
-* **Database:** MySQL
-* **Build Tool:** Apache Maven
-* **Server:** Apache Tomcat 9+ or GlassFish
+ServiceHub is a robust, dynamic Java web application designed to connect local customers with independent service professionals (such as plumbers, electricians, carpenters, and technicians). This project is built as a learning exercise to master core enterprise Java development concepts.
 
-## Setup Instructions
+---
 
-### 1. Database Configuration
-1. Create a MySQL database named `servicehub_db`.
-2. Execute the database schema scripts found in `/database/schema.sql` (If available).
-3. Copy `src/main/resources/config.properties.example` to `src/main/resources/config.properties`.
-4. Update the DB credentials in `config.properties`.
+ Architecture & Tech Stack
 
-### 2. How to Build and Run
-```bash
-mvn clean install
-=======
-# ServiceHub
-Java Web Application (Jakarta Servlets + JSP + MySQL)
->>>>>>> db94169513c38ead6629f77e9ba2e9ee31fe4bcc
+This project follows the **MVC (Model-View-Controller)** design pattern and implements strict separation of concerns using Data Access Objects (DAOs).
+
+* **Backend Framework:** Jakarta Servlets (Java EE 9+)
+* **Frontend UI:** JSP (JavaServer Pages), JSTL, Bootstrap 5, HTML5, CSS3
+* **Data Access Layer:** JDBC (Java Database Connectivity) with PreparedStatements
+* **Database:** MySQL 8.x
+* **Dependency & Build Management:** Apache Maven
+* **Development IDE:** NetBeans / IntelliJ IDEA
+
+---
+
+Project Directory Structure
+
+```text
+ServiceHub/
+│
+├── .gitignore                        # Git ignore rules for Maven/IDEs
+├── pom.xml                           # Maven project configuration and dependencies
+├── README.md                         # Project documentation
+│
+├── database/
+│   └── schema.sql                    # Production MySQL schema scripts
+│
+└── src/
+    └── main/
+        ├── java/
+        │   └── com/mycompany/servicehub/
+        │       ├── config/           # Database connections and configurations
+        │       ├── dao/              # Database access layer (SQL operations)
+        │       ├── model/            # Plain Old Java Objects (POJO / Entities)
+        │       └── servlet/          # Controller layer handling HTTP requests
+        │
+        └── webapp/
+            ├── WEB-INF/              # Protected web configuration files
+            ├── css/                  # Compiled styles and custom stylesheets
+            ├── js/                   # Custom client-side scripting
+            └── views/                # Modular JSP views (Dashboard, Profiles, Auth)
