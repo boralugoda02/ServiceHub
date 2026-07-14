@@ -18,7 +18,7 @@
     
     <div class="card p-4 shadow-sm mb-4">
         <h5>Add New Category</h5>
-        <form action="../CategoryServlet" method="POST" class="row g-3">
+        <form action="${pageContext.request.contextPath}/admin/CategoryServlet" method="POST" class="row g-3">
             <input type="hidden" name="action" value="add">
             <div class="col-md-6">
                 <input type="text" name="categoryName" placeholder="e.g. Painting, Cleaning" class="form-control" required>
@@ -43,7 +43,7 @@
                     <tr>
                         <td>${cat}</td>
                         <td>
-                            <a href="../CategoryServlet?action=delete&categoryName=${cat}" 
+                            <a href="${pageContext.request.contextPath}/admin/CategoryServlet?action=delete&categoryName=${cat}" 
                                class="btn btn-danger btn-sm" 
                                onclick="return confirm('Are you sure you want to delete this category?')">Delete</a>
                         </td>

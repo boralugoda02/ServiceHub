@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Servlet to fetch statistics for the Admin Dashboard.
  */
-@WebServlet("/DashboardServlet")
+@WebServlet("/admin/DashboardServlet")
 public class DashboardServlet extends HttpServlet {
 
     // Initialize DAO instance
@@ -23,7 +23,7 @@ public class DashboardServlet extends HttpServlet {
         com.mycompany.servicehub.model.User user = (com.mycompany.servicehub.model.User) session.getAttribute("user");
         
         if (user == null || !"Admin".equalsIgnoreCase(user.getRole())) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
@@ -38,7 +38,7 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute("completedJobs", dao.getCompletedJobsCount());
         request.setAttribute("pendingRequests", dao.getPendingRequestsCount());
         
-        // Forward the gathered data to the dashboard JSP
-        request.getRequestDispatcher("admin/dashboard.jsp").forward(request, response);
+        // Forward the gathered data to the dashboard JSP (using context-relative absolute path)
+        request.getRequestDispatcher("/admin/dashboard.jsp").forward(request, response);
     }
 }

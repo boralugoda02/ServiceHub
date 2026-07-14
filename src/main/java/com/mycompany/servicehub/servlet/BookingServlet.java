@@ -21,8 +21,16 @@ public class BookingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        com.mycompany.servicehub.model.User user = (session != null) ? (com.mycompany.servicehub.model.User) session.getAttribute("user") : null;
+        String userRole = (user != null && user.getRole() != null) ? user.getRole().toLowerCase() : null;
         String action = request.getParameter("action");
+        
         if ("delete".equals(action)) {
+            if (!"admin".equals(userRole)) {
+                response.sendRedirect("error.jsp?error=UnauthorizedAccess");
+                return;
+            }
             try {
                 int bookingId = Integer.parseInt(request.getParameter("id"));
                 bookingDAO.deleteBooking(bookingId);
@@ -64,6 +72,19 @@ public class BookingServlet extends HttpServlet {
                 String serviceDate = request.getParameter("serviceDate");
                 String serviceTime = request.getParameter("serviceTime");
 
+                // Future date validation logic
+                try {
+                    java.time.LocalDate today = java.time.LocalDate.now();
+                    java.time.LocalDate requestedDate = java.time.LocalDate.parse(serviceDate);
+                    if (requestedDate.isBefore(today)) {
+                        response.sendRedirect("customer/request-service.jsp?error=InvalidDate");
+                        return;
+                    }
+                } catch (Exception e) {
+                    response.sendRedirect("customer/request-service.jsp?error=InvalidDateFormat");
+                    return;
+                }
+
                 // 1. Create a service request first
                 ServiceRequest sr = new ServiceRequest();
                 sr.setCustomerId(customerId);
@@ -96,41 +117,43 @@ public class BookingServlet extends HttpServlet {
                     response.sendRedirect("customer/request-service.jsp?error=DatabaseError");
                 }
 
-            } else if ("confirm".equals(action)) {
-                int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-                bookingDAO.updateBookingStatus(bookingId, "Confirmed");
-                response.sendRedirect("customer/my-bookings.jsp?status=confirmed");
+            } else if ("confirm".equals(action) || "cancel".equals(action) || "accept".equals(action) || 
+                       "reject".equals(action) || "start".equals(action) || "complete".equals(action) || "update".equals(action)) {
+                
+                int bookingId;
+                String targetStatus = "";
+                String redirectUrl = "";
+                
+                if ("update".equals(action)) {
+                    bookingId = Integer.parseInt(request.getParameter("id"));
+                    targetStatus = request.getParameter("status");
+                    redirectUrl = "admin/bookings.jsp?status=updated";
+                } else {
+                    bookingId = Integer.parseInt(request.getParameter("bookingId"));
+                    if ("confirm".equals(action)) { targetStatus = "Confirmed"; redirectUrl = "customer/my-bookings.jsp?status=confirmed"; }
+                    else if ("cancel".equals(action)) { targetStatus = "Cancelled"; redirectUrl = "customer/my-bookings.jsp?status=cancelled"; }
+                    else if ("accept".equals(action)) { targetStatus = "Accepted"; redirectUrl = "worker/my-jobs.jsp?status=accepted"; }
+                    else if ("reject".equals(action)) { targetStatus = "Rejected"; redirectUrl = "worker/my-jobs.jsp?status=rejected"; }
+                    else if ("start".equals(action)) { targetStatus = "In Progress"; redirectUrl = "worker/my-jobs.jsp?status=started"; }
+                    else if ("complete".equals(action)) { targetStatus = "Completed"; redirectUrl = "worker/my-jobs.jsp?status=completed"; }
+                }
 
-            } else if ("cancel".equals(action)) {
-                int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-                bookingDAO.updateBookingStatus(bookingId, "Cancelled");
-                response.sendRedirect("customer/my-bookings.jsp?status=cancelled");
+                Booking booking = bookingDAO.getBookingById(bookingId);
+                if (booking == null) {
+                    response.sendRedirect("error.jsp?error=BookingNotFound");
+                    return;
+                }
 
-            } else if ("accept".equals(action)) {
-                int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-                bookingDAO.updateBookingStatus(bookingId, "Accepted");
-                response.sendRedirect("worker/my-jobs.jsp?status=accepted");
+                // If not Admin, enforce strict state machine transitions
+                if (!"admin".equals(userType)) {
+                    if (!bookingService.isValidTransition(booking.getBookingStatus(), targetStatus)) {
+                        response.sendRedirect("error.jsp?error=InvalidStateTransition");
+                        return;
+                    }
+                }
 
-            } else if ("reject".equals(action)) {
-                int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-                bookingDAO.updateBookingStatus(bookingId, "Rejected");
-                response.sendRedirect("worker/my-jobs.jsp?status=rejected");
-
-            } else if ("start".equals(action)) {
-                int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-                bookingDAO.updateBookingStatus(bookingId, "In Progress");
-                response.sendRedirect("worker/my-jobs.jsp?status=started");
-
-            } else if ("complete".equals(action)) {
-                int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-                bookingDAO.updateBookingStatus(bookingId, "Completed");
-                response.sendRedirect("worker/my-jobs.jsp?status=completed");
-
-            } else if ("update".equals(action)) {
-                int bookingId = Integer.parseInt(request.getParameter("id"));
-                String status = request.getParameter("status");
-                bookingDAO.updateBookingStatus(bookingId, status);
-                response.sendRedirect("admin/bookings.jsp?status=updated");
+                bookingDAO.updateBookingStatus(bookingId, targetStatus);
+                response.sendRedirect(redirectUrl);
 
             } else {
                 response.sendRedirect("index.jsp?error=InvalidAction");

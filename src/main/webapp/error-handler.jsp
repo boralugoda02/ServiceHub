@@ -1,5 +1,5 @@
 <%-- This component handles all error messages from the URL --%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page pageEncoding="UTF-8"%>
 <%
     String error = request.getParameter("error");
     Boolean hideErrorInHeader = (Boolean) request.getAttribute("hideErrorInHeader");

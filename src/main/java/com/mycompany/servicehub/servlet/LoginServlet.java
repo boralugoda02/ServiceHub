@@ -30,10 +30,16 @@ public class LoginServlet extends HttpServlet {
 
             // 3. Audit Log එකට වාර්තා කිරීම
             AuditLogDAO auditDAO = new AuditLogDAO();
-            auditDAO.insertLog(user.getUserId(), "LOGIN", "User logged in successfully");
+            auditDAO.insertLog(user.getUserId(), "LOGIN", request.getRemoteAddr());
 
-            // 4. Session එක ආරම්භ කිරීම - "user" attribute එකෙන්ම සම්පූර්ණ object එක save කිරීම
-            HttpSession session = request.getSession();
+            // 4. Session ID එක වෙනස් කිරීම (Session Fixation වැළැක්වීම)
+            HttpSession oldSession = request.getSession(false);
+            if (oldSession != null) {
+                oldSession.invalidate();
+            }
+            HttpSession session = request.getSession(true);
+
+            // 5. Session එක ආරම්භ කිරීම - "user" attribute එකෙන්ම සම්පූර්ණ object එක save කිරීම
             session.setAttribute("user", user);
             session.setAttribute("customerId", user.getUserId());
             session.setAttribute("userId", user.getUserId());

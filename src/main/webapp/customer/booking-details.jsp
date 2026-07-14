@@ -1,5 +1,11 @@
 <%@ page import="com.mycompany.servicehub.model.*, com.mycompany.servicehub.service.*" %>
 <%
+    User loggedInUser = (User) session.getAttribute("user");
+    if (loggedInUser == null) {
+        response.sendRedirect("../login.jsp?error=LoginRequired");
+        return;
+    }
+
     // Get booking ID from URL parameter
     String idParam = request.getParameter("id");
     if (idParam == null) {
@@ -7,12 +13,25 @@
         return;
     }
     
-    int bId = Integer.parseInt(idParam);
+    int bId = 0;
+    try {
+        bId = Integer.parseInt(idParam);
+    } catch (NumberFormatException e) {
+        response.sendRedirect("my-bookings.jsp?error=InvalidId");
+        return;
+    }
+
     BookingService service = new BookingService();
     Booking b = service.getBookingDetails(bId); // Fetches booking object
     
     if (b == null) {
-        out.println("Booking not found!");
+        response.sendRedirect("my-bookings.jsp?error=BookingNotFound");
+        return;
+    }
+    
+    // Enforce authorization check (BOLA prevention)
+    if (!"Admin".equalsIgnoreCase(loggedInUser.getRole()) && b.getCustomerId() != loggedInUser.getUserId()) {
+        response.sendRedirect("my-bookings.jsp?error=UnauthorizedAccess");
         return;
     }
 %>

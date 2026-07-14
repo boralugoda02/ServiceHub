@@ -22,19 +22,29 @@ public class UploadProfileServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (user == null) {
+            response.sendRedirect("login.jsp?error=SessionExpired");
+            return;
+        }
+
         Part filePart = request.getPart("profilePhoto");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        String rawFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
         String extension = "";
-        int i = fileName.lastIndexOf('.');
+        int i = rawFileName.lastIndexOf('.');
         if (i > 0) {
-            extension = fileName.substring(i).toLowerCase();
+            extension = rawFileName.substring(i).toLowerCase();
         }
         if (!(extension.equals(".jpg") || extension.equals(".jpeg") || extension.equals(".png"))) {
             response.sendRedirect("profile.jsp?error=InvalidImageType");
             return;
         }
 
+        // Generate a unique filename using userId and timestamp
+        String fileName = "profile_" + user.getUserId() + "_" + System.currentTimeMillis() + extension;
         String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdir();
@@ -42,25 +52,18 @@ public class UploadProfileServlet extends BaseServlet {
         String filePath = uploadPath + File.separator + fileName;
         filePart.write(filePath);
 
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        String dbPath = "uploads/" + fileName;
+        try {
+            userDAO.updateProfilePhoto(user.getUserId(), dbPath);
+            user.setProfilePhoto(dbPath);
+            session.setAttribute("user", user);
 
-        if (user != null) {
-            String dbPath = "uploads/" + fileName;
-            try {
-                userDAO.updateProfilePhoto(user.getUserId(), dbPath);
-                user.setProfilePhoto(dbPath);
-                session.setAttribute("user", user);
+            // Log the photo upload event
+            logActivity(user.getUserId(), "Updated profile photo", request);
 
-                // Log the photo upload event
-                logActivity(user.getUserId(), "Updated profile photo", request);
-
-                response.sendRedirect("profile.jsp?status=photoUpdated");
-            } catch (Exception e) {
-                response.sendRedirect("profile.jsp?error=DatabaseUpdateFailed");
-            }
-        } else {
-            response.sendRedirect("login.jsp?error=SessionExpired");
+            response.sendRedirect("profile.jsp?status=photoUpdated");
+        } catch (Exception e) {
+            response.sendRedirect("profile.jsp?error=DatabaseUpdateFailed");
         }
     }
 

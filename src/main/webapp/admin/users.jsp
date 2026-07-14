@@ -27,9 +27,9 @@
                     <td>${u.role}</td>
                     <td>${u.status}</td>
                     <td>
-                        <a href="${pageContext.request.contextPath}/UserManagementServlet?action=toggleStatus&id=${u.userId}&status=${u.status == 'Active' ? 'Deactivated' : 'Active'}" 
+                        <a href="${pageContext.request.contextPath}/admin/UserManagementServlet?action=toggleStatus&id=${u.userId}&status=${u.status == 'Active' ? 'Deactivated' : 'Active'}" 
                            class="btn btn-sm btn-warning">Toggle Status</a>
-                        <a href="${pageContext.request.contextPath}/UserManagementServlet?action=delete&id=${u.userId}" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="${pageContext.request.contextPath}/admin/UserManagementServlet?action=delete&id=${u.userId}" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
             </c:forEach>

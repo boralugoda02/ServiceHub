@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page pageEncoding="UTF-8"%>
 <footer class="text-center py-4 bg-dark text-white border-top border-secondary mt-auto">
     <div class="container">
         <p class="mb-2">© 2026 ServiceHub | Connecting Local Talents</p>

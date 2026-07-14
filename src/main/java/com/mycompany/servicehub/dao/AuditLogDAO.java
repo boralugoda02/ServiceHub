@@ -9,13 +9,13 @@ public class AuditLogDAO {
         return DBConnection.getConnection();
     }
 
-    // Insert log method
-    public void insertLog(int userId, String action, String description) {
-        String sql = "INSERT INTO audit_logs (user_id, action, description) VALUES (?, ?, ?)";
+    // Insert log method (correctly targeting activity_logs table matching schema)
+    public void insertLog(int userId, String action, String ipAddress) {
+        String sql = "INSERT INTO activity_logs (user_id, action, ip_address) VALUES (?, ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setString(2, action);
-            ps.setString(3, description);
+            ps.setString(3, ipAddress);
             ps.executeUpdate();
         } catch (SQLException e) { 
             e.printStackTrace(); 

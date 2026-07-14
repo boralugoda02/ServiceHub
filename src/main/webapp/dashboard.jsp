@@ -10,7 +10,7 @@
 
     // Redirect to role-specific dashboard
     if ("Admin".equalsIgnoreCase(user.getRole())) {
-        response.sendRedirect(request.getContextPath() + "/DashboardServlet");
+        response.sendRedirect(request.getContextPath() + "/admin/DashboardServlet");
         return;
     } else if ("Customer".equalsIgnoreCase(user.getRole())) {
         response.sendRedirect(request.getContextPath() + "/customer/dashboard.jsp");

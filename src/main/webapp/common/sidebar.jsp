@@ -20,7 +20,7 @@
     <nav class="nav flex-column">
         <%-- Main Dashboard link --%>
         <% if ("Admin".equals(sidebarUser.getRole())) { %>
-            <a class="nav-link <%= currentURI.contains("admin/dashboard") || currentURI.contains("DashboardServlet") ? "active" : "" %>" href="${pageContext.request.contextPath}/DashboardServlet"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a class="nav-link <%= currentURI.contains("admin/dashboard") || currentURI.contains("DashboardServlet") ? "active" : "" %>" href="${pageContext.request.contextPath}/admin/DashboardServlet"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         <% } else if ("Customer".equals(sidebarUser.getRole())) { %>
             <a class="nav-link <%= currentURI.contains("customer/dashboard") ? "active" : "" %>" href="${pageContext.request.contextPath}/customer/dashboard.jsp"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         <% } else if ("Worker".equals(sidebarUser.getRole())) { %>

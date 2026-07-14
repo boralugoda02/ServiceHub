@@ -14,10 +14,10 @@ import java.io.IOException;
 import com.mycompany.servicehub.model.User;
 
 /**
- * Filter to protect booking-related pages by ensuring 
- * the user is authenticated (logged in).
+ * Filter to protect customer, worker, and booking pages by ensuring 
+ * the user is authenticated (logged in) and has the correct role.
  */
-@WebFilter("/bookings/*")
+@WebFilter(urlPatterns = {"/customer/*", "/worker/*", "/BookingServlet", "/ChatServlet"})
 public class AuthFilter implements Filter {
 
     @Override
@@ -36,16 +36,31 @@ public class AuthFilter implements Filter {
         HttpSession session = httpRequest.getSession(false);
 
         // Check if session exists and if user attribute is set
-        boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        if (isLoggedIn) {
-            // User is authorized, continue the request
-            chain.doFilter(request, response);
-        } else {
-            // User is not authorized, redirect to the login page
-            // Adjust the path "../login.jsp" according to your project structure
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.jsp?error=AccessDenied");
+        if (user == null) {
+            // User is not logged in, redirect to the login page
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.jsp?error=LoginRequired");
+            return;
         }
+
+        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+        String role = user.getRole(); // "Customer", "Worker", "Admin"
+
+        // Enforce customer paths
+        if (path.startsWith("/customer/") && !"Customer".equalsIgnoreCase(role) && !"Admin".equalsIgnoreCase(role)) {
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/error.jsp?error=UnauthorizedAccess");
+            return;
+        }
+
+        // Enforce worker paths
+        if (path.startsWith("/worker/") && !"Worker".equalsIgnoreCase(role) && !"Admin".equalsIgnoreCase(role)) {
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/error.jsp?error=UnauthorizedAccess");
+            return;
+        }
+
+        // User is authorized, continue the request
+        chain.doFilter(request, response);
     }
 
     @Override
