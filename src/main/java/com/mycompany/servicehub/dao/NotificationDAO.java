@@ -84,4 +84,53 @@ public class NotificationDAO {
             return false;
         }
     }
+
+    // Get recent notifications formatted as String list
+    public List<String> getRecentNotifications() {
+        List<String> list = new ArrayList<>();
+        String sql = "SELECT title, message FROM notifications ORDER BY created_at DESC LIMIT 5";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String title = rs.getString("title");
+                String message = rs.getString("message");
+                if (title != null && !title.isEmpty()) {
+                    list.add(title + " - " + message);
+                } else {
+                    list.add(message);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Get all notifications in the system (most recent first)
+    public List<Notification> getAllNotifications() {
+        List<Notification> list = new ArrayList<>();
+        String sql = "SELECT * FROM notifications ORDER BY created_at DESC";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Notification n = new Notification();
+                n.setNotificationId(rs.getInt("notification_id"));
+                n.setSenderId(rs.getInt("sender_id"));
+                n.setReceiverId(rs.getInt("receiver_id"));
+                n.setTitle(rs.getString("title"));
+                n.setMessage(rs.getString("message"));
+                n.setType(rs.getString("type"));
+                n.setRead(rs.getBoolean("is_read"));
+                n.setCreatedAt(rs.getTimestamp("created_at"));
+                list.add(n);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

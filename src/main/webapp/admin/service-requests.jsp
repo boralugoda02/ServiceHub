@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="jakarta.tags.core" prefix="c"%>
 <%@page import="com.mycompany.servicehub.dao.RequestDAO"%>
 <%
     RequestDAO requestDAO = new RequestDAO();

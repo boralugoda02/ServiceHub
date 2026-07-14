@@ -46,4 +46,8 @@ public class Notification {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    // Aliases to support EL in JSPs
+    public int getId() { return notificationId; }
+    public int getRecipient() { return receiverId; }
 }
