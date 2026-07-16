@@ -8,7 +8,9 @@ public class ServiceRequest {
     private String description;
     private String location;
     private String status;
-    private String imagePath; // Added for file upload
+    private String imagePath;
+    private String city;
+
 
     // Constructor
     public ServiceRequest() {}

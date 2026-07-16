@@ -4,9 +4,16 @@
     Integer customerId = (Integer) session.getAttribute("customerId");
     String userName = (String) session.getAttribute("userName");
     if (userName == null) userName = "Customer";
-    if (customerId == null) { response.sendRedirect("../login.jsp"); return; }
-    BookingService bookingService = new BookingService();
-    List<Booking> bookings = bookingService.getCustomerBookings(customerId);
+    
+    // 💡 පරිශීලකයා ලොග් වී නැත්නම් පමණක් Redirect කරයි
+    if (customerId == null) { 
+        response.sendRedirect("../login.jsp"); 
+        return; 
+    }
+    
+    // 💡 වැදගත්: කෙලින්ම service එකෙන් ගන්නේ නැතිව, Servlet එකෙන් එවන Request Attribute එක ලබා ගැනීම
+    List<Booking> bookings = (List<Booking>) request.getAttribute("bookings");
+    
     UserDAO userDAO = new UserDAO();
 %>
 <!DOCTYPE html>

@@ -136,4 +136,32 @@ public class BookingDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
+    
+    public List<Booking> getBookingsByCustomerId(int customerId) {
+    List<Booking> list = new ArrayList<>();
+    String query = "SELECT b.*, sr.title AS requestTitle FROM bookings b JOIN service_requests sr ON b.request_id = sr.id WHERE b.customer_id = ?";
+    
+    try (Connection con = DBConnection.getConnection(); // 💡 ඔයාගේ DB Connection ක්‍රමය මෙතැනට දාන්න
+         PreparedStatement ps = con.prepareStatement(query)) {
+        
+        ps.setInt(1, customerId);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Booking b = new Booking();
+                b.setBookingId(rs.getInt("id"));
+                b.setRequestId(rs.getInt("request_id"));
+                b.setServiceDate(rs.getString("service_date"));
+                b.setServiceTime(rs.getString("service_time"));
+                b.setBookingStatus(rs.getString("booking_status"));
+                b.setWorkerId(rs.getInt("worker_id"));
+                // JSP එකේ පෙන්වීමට requestTitle එක Object එකට සෙට් කරන්න
+                b.setRequestTitle(rs.getString("requestTitle")); 
+                list.add(b);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
 }

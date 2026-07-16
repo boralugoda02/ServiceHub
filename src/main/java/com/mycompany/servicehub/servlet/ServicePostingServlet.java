@@ -10,40 +10,47 @@ import java.io.IOException;
 @WebServlet("/postService")
 public class ServicePostingServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+    HttpSession session = request.getSession();
+    
+    // JSP එකේ ඇති සැබෑ Session attribute එක වන "customerId" ලබාගනිමු
+    Integer customerId = (Integer) session.getAttribute("customerId");
 
-        if (user == null) {
-            response.sendRedirect("login.jsp?error=Unauthorized");
-            return;
-        }
-
-        String title = request.getParameter("title");
-        String category = request.getParameter("category");
-        String budgetStr = request.getParameter("budget");
-
-        if (title == null || category == null || budgetStr == null) {
-            response.sendRedirect("customer/request-service.jsp?error=EmptyFields");
-            return;
-        }
-
-        try {
-            double budget = Double.parseDouble(budgetStr);
-            ServiceDAO serviceDAO = new ServiceDAO();
-
-            boolean success = serviceDAO.saveRequest(user.getUserId(), title, category, budget, "Pending");
-            if (success) {
-                // Log the service posting event
-                logActivity(user.getUserId(), "Posted new service request: " + title, request);
-
-                response.sendRedirect("customer/my-bookings.jsp?status=Posted");
-            } else {
-                response.sendRedirect("customer/request-service.jsp?error=DatabaseError");
-            }
-        } catch (Exception e) {
-            response.sendRedirect("customer/request-service.jsp?error=InvalidBudget");
-        }
+    if (customerId == null) {
+        response.sendRedirect("login.jsp?error=Unauthorized");
+        return;
     }
+
+    String district = request.getParameter("district");
+    String city = request.getParameter("city");
+    String fullAddress = request.getParameter("fullAddress"); 
+    String serviceDate = request.getParameter("serviceDate");
+    String serviceTime = request.getParameter("serviceTime");
+
+    if (city == null || city.isEmpty()) {
+        response.sendRedirect("customer/request-service.jsp?error=EmptyFields");
+        return;
+    }
+
+    try {
+        String dynamicTitle = "Need Service at " + city + " (" + district + ")";
+        String detailsSummary = "Address: " + fullAddress + " | Date: " + serviceDate + " | Time: " + serviceTime;
+        double defaultBudget = 1.0; // 0.0 වෙනුවට 1.0 ලෙස ආරක්ෂිත අගයක් දෙමු
+        String status = "Pending";
+
+        ServiceDAO serviceDAO = new ServiceDAO();
+        // ලබාගත් customerId එක ඍජුවම මෙතැනට පාස් කරමු
+        boolean success = serviceDAO.saveRequest(customerId, dynamicTitle, detailsSummary, defaultBudget, status, city);
+        
+        if (success) {
+            response.sendRedirect("customer/my-bookings.jsp?status=Posted");
+        } else {
+            response.sendRedirect("customer/request-service.jsp?error=DatabaseError");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendRedirect("customer/request-service.jsp?error=DatabaseError");
+    }
+}
 
     // Helper method to log activity
     private void logActivity(int userId, String action, HttpServletRequest request) {

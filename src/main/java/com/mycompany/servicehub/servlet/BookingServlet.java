@@ -40,6 +40,20 @@ public class BookingServlet extends HttpServlet {
                 response.sendRedirect("admin/bookings.jsp?error=DeleteFailed");
             }
         } else {
+            Integer customerId = (Integer) session.getAttribute("customerId");
+            if (customerId != null && "customer".equals(userRole)) {
+                try {
+                    // 💡 ServiceRequestDAO වෙනුවට BookingDAO එක භාවිතයෙන් Bookings ලැයිස්තුව ලබා ගැනීම
+                    // (ඔයාගේ BookingDAO එකේ customerId එකෙන් bookings ගන්න මෙතඩ් එකක් ඇති, එය මෙතැනට යොදන්න)
+                    java.util.List<com.mycompany.servicehub.model.Booking> bookingList = bookingDAO.getBookingsByCustomerId(customerId);
+                    
+                    request.setAttribute("bookings", bookingList);
+                    request.getRequestDispatcher("customer/my-bookings.jsp").forward(request, response);
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             response.sendRedirect("index.jsp");
         }
     }
@@ -86,13 +100,16 @@ public class BookingServlet extends HttpServlet {
                 }
 
                 // 1. Create a service request first
-                ServiceRequest sr = new ServiceRequest();
-                sr.setCustomerId(customerId);
-                sr.setCategoryId(categoryDAO.getOrCreateDefaultCategoryId());
-                sr.setTitle("Service Request at " + city);
-                sr.setDescription("Address: " + address + ", District: " + district);
-                sr.setLocation(city);
-                sr.setStatus("Pending");
+                //  මෙසේ වෙනස් කරන්න:
+ServiceRequest sr = new ServiceRequest();
+sr.setCustomerId(customerId);
+sr.setCategoryId(categoryDAO.getOrCreateDefaultCategoryId());
+sr.setTitle("Service Request at " + city);
+sr.setDescription("Address: " + address + ", District: " + district);
+sr.setLocation(city);
+sr.setStatus("Pending");
+// 💡 ඩේටාබේස් එකේ field එක decimal(10,2) නිසා budget එකක් සෙට් කරන්න
+
 
                 int requestId = serviceRequestDAO.saveRequestAndGetId(sr);
                 if (requestId == -1) {
@@ -112,8 +129,9 @@ public class BookingServlet extends HttpServlet {
                 b.setNotes("Address: " + address + ", District: " + district);
 
                 if (bookingService.processBooking(b)) {
-                    response.sendRedirect("customer/my-bookings.jsp?status=success");
-                } else {
+    // කෙලින්ම JSP එකට නොයා දත්ත Load කරන Servlet එකටම යොමු කිරීම (Relative Path එකක් ලෙස)
+    response.sendRedirect("BookingServlet?status=success");
+} else {
                     response.sendRedirect("customer/request-service.jsp?error=DatabaseError");
                 }
 

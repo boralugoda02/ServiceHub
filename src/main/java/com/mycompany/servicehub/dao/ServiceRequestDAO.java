@@ -148,4 +148,61 @@ public class ServiceRequestDAO {
         }
         return -1;
     }
+   
+    public List<ServiceRequest> getFilteredJobs(String city) {
+    List<ServiceRequest> list = new ArrayList<>();
+    // ඩේටාබේස් එකේ තියෙන විදිහටම Query එක ලියන්න
+    String query = "SELECT * FROM service_requests WHERE city = ? AND status = 'Pending'";
+    
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(query)) {
+        
+        ps.setString(1, city);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ServiceRequest req = new ServiceRequest();
+                
+                // ඩේටාබේස් කොලම් වල නම් වලට හරියටම සමාන කරන්න
+                req.setRequestId(rs.getInt("id")); 
+                req.setTitle(rs.getString("service_title")); // 'title' වෙනුවට 'service_title' කරන්න
+                req.setDescription(rs.getString("description")); 
+                req.setLocation(rs.getString("city")); // පියවර 1 කළ පසු මෙය නිවැරදි වේ
+                req.setStatus(rs.getString("status"));
+                
+                list.add(req);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+
+}
+    
+    public List<ServiceRequest> getBookingsByCustomerId(int customerId) {
+    List<ServiceRequest> list = new ArrayList<>();
+    // මෙහිදී customer_id එකට අදාළ සියලුම දත්ත ලබා ගනී
+    String query = "SELECT * FROM service_requests WHERE customer_id = ?";
+    
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(query)) {
+        
+        ps.setInt(1, customerId);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ServiceRequest req = new ServiceRequest();
+                req.setRequestId(rs.getInt("id"));
+                req.setTitle(rs.getString("service_title"));
+                req.setCategoryId(rs.getInt("category_id"));
+                req.setStatus(rs.getString("status"));
+                // ඩේටාබේස් එකේ තියෙන created_at හෝ serviceDate එක Summary එක ලෙස හෝ වෙනම ලබාගන්න
+                req.setDescription(rs.getString("created_at")); 
+                list.add(req);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
 }

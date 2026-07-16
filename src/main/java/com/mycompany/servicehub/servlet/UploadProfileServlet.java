@@ -31,17 +31,24 @@ public class UploadProfileServlet extends BaseServlet {
         }
 
         Part filePart = request.getPart("profilePhoto");
-        String rawFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
-        String extension = "";
-        int i = rawFileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = rawFileName.substring(i).toLowerCase();
-        }
-        if (!(extension.equals(".jpg") || extension.equals(".jpeg") || extension.equals(".png"))) {
-            response.sendRedirect("profile.jsp?error=InvalidImageType");
-            return;
-        }
+if (filePart == null || filePart.getSize() == 0 || 
+    filePart.getSubmittedFileName() == null || 
+    filePart.getSubmittedFileName().trim().isEmpty()) {
+    response.sendRedirect("profile.jsp?error=NoFileSelected");
+    return;
+}
+
+String rawFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+String extension = "";
+int i = rawFileName.lastIndexOf('.');
+if (i > 0) {
+    extension = rawFileName.substring(i).toLowerCase();
+}
+if (!(extension.equals(".jpg") || extension.equals(".jpeg") || extension.equals(".png"))) {
+    response.sendRedirect("profile.jsp?error=InvalidImageType");
+    return;
+}
 
         // Generate a unique filename using userId and timestamp
         String fileName = "profile_" + user.getUserId() + "_" + System.currentTimeMillis() + extension;

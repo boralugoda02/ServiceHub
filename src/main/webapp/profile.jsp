@@ -43,7 +43,7 @@
                          onerror="this.src='https://ui-avatars.com/api/?name=${sessionScope.user.fullName}&background=3b82f6&color=fff'" 
                          width="150" height="150" class="rounded-circle mb-3 mx-auto shadow" alt="Profile Photo" style="object-fit: cover;">
                     <form action="upload-photo" method="POST" enctype="multipart/form-data">
-                        <input type="file" name="profilePhoto" class="form-control mb-2" accept="image/*" required>
+                        <input type="file" name="profilePhoto" id="profilePhoto" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required>
                         <button type="submit" class="btn btn-warning w-100 fw-semibold">Upload Photo</button>
                     </form>
                 </div>
